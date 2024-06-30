@@ -13,6 +13,35 @@
       margin: 0;
       padding: 0;
       display: flex;
+    }
+    #sidebar {
+      width: 200px;
+      background-color: #333; /* Dark sidebar background */
+      height: 100vh; /* Full height sidebar */
+      padding-top: 20px;
+      position: fixed;
+      left: 0;
+      overflow-y: auto; /* Allow scrolling if needed */
+    }
+    #sidebar a {
+      display: block;
+      padding: 10px 20px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px;
+      transition: background-color 0.3s;
+    }
+    #sidebar a:hover {
+      background-color: #555; /* Darker on hover */
+    }
+    #sidebar a.active {
+      background-color: #FF0000; /* Red background for active link */
+    }
+    #main {
+      margin-left: 200px; /* Adjust main content area */
+      padding: 20px;
+      width: 80%;
+      display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -35,15 +64,28 @@
   </style>
 </head>
 <body>
-  <!-- Shorts Player -->
-  <div id="shortsPlayer">
-    <iframe id="shortsIframe" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <a href="index.html" id="homeLink" onclick="loadHome()">Home</a>
+    <a href="shorts.html" class="active">Shorts</a>
+    <a href="#" onclick="History()">History</a>
+  </div>
+
+  <!-- Main content -->
+  <div id="main">
+    <!-- Shorts Player -->
+    <div id="shortsPlayer">
+      <iframe id="shortsIframe" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+    </div>
   </div>
 
   <script>
     let shorts = []; // Array to store Shorts video IDs
     let currentIndex = -1; // Index to track the currently playing Shorts video
     let isLoading = false; // Flag to prevent multiple simultaneous requests
+
+    // API key for fetching Shorts (replace with your actual API key)
+    const shortsAPIKey = 'AIzaSyA-Dc08Er4y_vSGZ9zmKDKE3uj2e6TZ3mk';
 
     function loadShorts() {
       fetchShortsIds()
@@ -96,7 +138,7 @@
 
     // Function to fetch Shorts video IDs (placeholder)
     function fetchShortsIds() {
-      var url = `https://www.googleapis.com/youtube/v3/search?key=AIzaSyA-Dc08Er4y_vSGZ9zmKDKE3uj2e6TZ3mk&type=video&part=snippet&q=shorts&maxResults=50`;
+      var url = `https://www.googleapis.com/youtube/v3/search?key=${shortsAPIKey}&type=video&part=snippet&q=shorts&maxResults=50`;
 
       return fetch(url)
         .then(response => response.json())
@@ -118,8 +160,19 @@
       }
     });
 
+    // Function to load Home page (replace with actual functionality)
+    function loadHome() {
+      alert('Load Home page functionality not implemented.');
+    }
+
+    // Function to handle History page (replace with actual functionality)
+    function History() {
+      alert('History page functionality not implemented.');
+    }
+
     // Load Shorts when the page initially loads
     loadShorts();
   </script>
 </body>
 </html>
+
