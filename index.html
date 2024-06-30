@@ -112,6 +112,38 @@
       border: none;
       border-radius: 8px;
     }
+
+    /* Loading Indicator Styles */
+    #loadingIndicator {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+    #loadingBar {
+      width: 100%;
+      height: 10px;
+      background-color: #333;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    #loadingBar .progress {
+      width: 0%;
+      height: 100%;
+      background-color: #3498db; /* Blue color */
+      animation: loadingAnimation 2s infinite; /* Animation duration and loop */
+    }
+
+    @keyframes loadingAnimation {
+      0% {
+        width: 0%;
+      }
+      50% {
+        width: 50%;
+      }
+      100% {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -135,6 +167,13 @@
 
     <div id="video-container">
       <div class="video-grid" id="videoGrid"></div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator">
+      <div id="loadingBar">
+        <div class="progress"></div>
+      </div>
     </div>
   </div>
 
@@ -163,6 +202,9 @@
       isLoading = true;
       var url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&type=video&part=snippet&q=${keyword}&pageToken=${nextPageToken}&maxResults=20`;
 
+      // Show loading indicator
+      showLoadingIndicator();
+
       // Fetching YouTube API
       fetch(url)
         .then(response => response.json())
@@ -172,10 +214,12 @@
             nextPageToken = data.nextPageToken || ''; // Update the next page token
           }
           isLoading = false;
+          hideLoadingIndicator(); // Hide loading indicator after loading
         })
         .catch(error => {
           console.error('Error fetching videos:', error);
           isLoading = false;
+          hideLoadingIndicator(); // Hide loading indicator on error
         });
     }
 
@@ -265,6 +309,21 @@
           loadVideos('', homeAPIKey); // Load more videos for home
         }
       }
+    }
+
+    function showLoadingIndicator() {
+      var loadingBar = document.querySelector('#loadingBar .progress');
+      loadingBar.style.width = '0%'; // Reset progress bar width
+      var loadingIndicator = document.getElementById('loadingIndicator');
+      loadingIndicator.style.display = 'block';
+      setTimeout(function() {
+        loadingBar.style.width = '100%'; // Set progress bar to full width
+      }, 50); // Delay for smoother animation
+    }
+
+    function hideLoadingIndicator() {
+      var loadingIndicator = document.getElementById('loadingIndicator');
+      loadingIndicator.style.display = 'none';
     }
   </script>
 </body>
