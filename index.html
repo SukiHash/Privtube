@@ -143,6 +143,10 @@
     let isLoading = false; // Variable to prevent multiple simultaneous requests
     let history = []; // Array to store history
 
+    // API keys
+    const homeAPIKey = 'AIzaSyC7r_0nZUd5YpfwyDFcjrKRy1Fhw_bs4I4';
+    const searchAPIKey = 'AIzaSyBJqBurHNMVkVMTqgLgnZARm_6lDUy5GkA';
+
     function searchVideos() {
       var searchQuery = document.getElementById('searchInput').value.trim();
       if (searchQuery === '') return;
@@ -150,14 +154,14 @@
       nextPageToken = ''; // Reset token when a new search is performed
       clearVideoContainer(); // Clear existing videos
       addToHistory(searchQuery); // Add to history
-      loadVideos(searchQuery);
+      loadVideos(searchQuery, searchAPIKey); // Use search API key
     }
 
-    function loadVideos(keyword) {
+    function loadVideos(keyword, apiKey) {
       if (isLoading) return;
 
       isLoading = true;
-      var url = `https://www.googleapis.com/youtube/v3/search?key=AIzaSyD264oh-8oBj02CTcHgD024qr633XOw1Ks&type=video&part=snippet&q=${keyword}&pageToken=${nextPageToken}&maxResults=20`;
+      var url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&type=video&part=snippet&q=${keyword}&pageToken=${nextPageToken}&maxResults=20`;
 
       // Fetching YouTube API
       fetch(url)
@@ -238,7 +242,7 @@
     function loadHome() {
       clearVideoContainer(); // Clear existing videos
       document.getElementById('homeLink').classList.add('active'); // Highlight Home link
-      loadVideos(''); // Load initial videos (you can modify this to load from a specific category)
+      loadVideos('', homeAPIKey); // Use home API key for initial load
     }
 
     // Load shorts (not implemented in this example)
@@ -255,7 +259,7 @@
         // User has scrolled to the bottom
         var searchQuery = document.getElementById('searchInput').value.trim();
         if (searchQuery !== '') {
-          loadVideos(searchQuery); // Load more videos for the current search query
+          loadVideos(searchQuery, searchAPIKey); // Load more videos for the current search query
         } else {
           loadHome(); // Load more videos for home
         }
@@ -264,3 +268,4 @@
   </script>
 </body>
 </html>
+
