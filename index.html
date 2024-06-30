@@ -150,7 +150,7 @@
   <!-- Sidebar -->
   <div id="sidebar">
     <a href="#" id="homeLink" onclick="loadHome()">Home</a>
-    <a href="shorts.html" onclick="">Shorts</a>
+    <a href="shorts.html">Shorts</a>
     <a href="#" onclick="History()">History</a>
   </div>
 
@@ -289,10 +289,6 @@
       loadVideos('', homeAPIKey); // Use home API key for initial load
     }
 
-    // Load shorts (not implemented in this example)
-    function loadShorts() {
-      alert('Shorts feature is not implemented.');
-    }
 
     // Initial load of home videos
     loadHome();
