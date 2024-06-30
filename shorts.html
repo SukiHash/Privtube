@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrivTube - Shorts</title>
+  <style>
+    /* Styling with private colors */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1a1a1a; /* Dark background */
+      color: #fff; /* White text */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #shortsPlayer {
+      width: 80%;
+      max-width: 800px;
+      height: 450px; /* Adjust height as needed */
+      overflow: hidden;
+      position: relative;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Shorts Player -->
+  <div id="shortsPlayer">
+    <iframe id="shortsIframe" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    let shorts = []; // Array to store Shorts video IDs
+    let currentIndex = -1; // Index to track the currently playing Shorts video
+    let isLoading = false; // Flag to prevent multiple simultaneous requests
+
+    function loadShorts() {
+      fetchShortsIds()
+        .then(data => {
+          shorts = data.items.map(item => item.id.videoId);
+          playRandomShort();
+        })
+        .catch(error => {
+          console.error('Error fetching Shorts IDs:', error);
+        });
+
+      // Listen for scroll events
+      window.addEventListener('scroll', handleScroll);
+    }
+
+    function handleScroll() {
+      if (!isLoading && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+        isLoading = true;
+        playNextShort();
+      }
+    }
+
+    function playRandomShort() {
+      currentIndex = Math.floor(Math.random() * shorts.length);
+      playShortAtIndex(currentIndex);
+    }
+
+    function playNextShort() {
+      currentIndex++;
+      if (currentIndex >= shorts.length) {
+        currentIndex = 0; // Loop back to the first video if at the end
+      }
+      playShortAtIndex(currentIndex);
+    }
+
+    function playPreviousShort() {
+      currentIndex--;
+      if (currentIndex < 0) {
+        currentIndex = shorts.length - 1; // Loop back to the last video if at the beginning
+      }
+      playShortAtIndex(currentIndex);
+    }
+
+    function playShortAtIndex(index) {
+      var shortsIframe = document.getElementById('shortsIframe');
+      shortsIframe.src = `https://www.youtube.com/embed/${shorts[index]}?autoplay=1`; // Add autoplay=1 to autoplay
+
+      isLoading = false; // Reset isLoading flag
+    }
+
+    // Function to fetch Shorts video IDs (placeholder)
+    function fetchShortsIds() {
+      var url = `https://www.googleapis.com/youtube/v3/search?key=AIzaSyA-Dc08Er4y_vSGZ9zmKDKE3uj2e6TZ3mk&type=video&part=snippet&q=shorts&maxResults=50`;
+
+      return fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data.items) {
+            return data;
+          } else {
+            throw new Error('No Shorts found.');
+          }
+        });
+    }
+
+    // Listen for arrow key events
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'ArrowDown') {
+        playNextShort();
+      } else if (event.key === 'ArrowUp') {
+        playPreviousShort();
+      }
+    });
+
+    // Load Shorts when the page initially loads
+    loadShorts();
+  </script>
+</body>
+</html>
