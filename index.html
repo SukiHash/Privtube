@@ -130,6 +130,13 @@
 
     <div id="search-container">
       <input type="text" id="searchInput" placeholder="Search YouTube">
+      <label for="filter">Filter:</label>
+      <select id="filter">
+        <option value="video">All Videos</option>
+        <option value="channel">Channels</option>
+        <option value="longform">Long Form Videos</option>
+        <option value="shorts">Shorts</option>
+      </select>
       <button id="searchButton" onclick="searchVideos()">Search</button>
     </div>
 
@@ -144,24 +151,48 @@
     let history = []; // Array to store history
 
     // API keys
-    const homeAPIKey = 'AIzaSyC7r_0nZUd5YpfwyDFcjrKRy1Fhw_bs4I4';
-    const searchAPIKey = 'AIzaSyBJqBurHNMVkVMTqgLgnZARm_6lDUy5GkA';
+    const homeAPIKey = 'AIzaSyD264oh-8oBj02CTcHgD024qr633XOw1Ks';
+    const searchAPIKey = 'AIzaSyD264oh-8oBj02CTcHgD024qr633XOw1Kt';
 
     function searchVideos() {
       var searchQuery = document.getElementById('searchInput').value.trim();
+      var filter = document.getElementById('filter').value;
+
       if (searchQuery === '') return;
 
       nextPageToken = ''; // Reset token when a new search is performed
       clearVideoContainer(); // Clear existing videos
       addToHistory(searchQuery); // Add to history
-      loadVideos(searchQuery, searchAPIKey); // Use search API key
+      loadVideos(searchQuery, filter, searchAPIKey); // Use search API key
     }
 
-    function loadVideos(keyword, apiKey) {
+    function loadVideos(keyword, filter, apiKey) {
       if (isLoading) return;
 
       isLoading = true;
-      var url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&type=video&part=snippet&q=${keyword}&pageToken=${nextPageToken}&maxResults=20`;
+      var type = 'video';
+      var url;
+
+      switch (filter) {
+        case 'video':
+          type = 'video';
+          break;
+        case 'channel':
+          type = 'channel';
+          break;
+        case 'longform':
+          type = 'video';
+          keyword += ' long form'; // Adjust keyword for long form videos
+          break;
+        case 'shorts':
+          type = 'video';
+          keyword += ' shorts'; // Adjust keyword for shorts
+          break;
+        default:
+          type = 'video';
+      }
+
+      url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&type=${type}&part=snippet&q=${keyword}&pageToken=${nextPageToken}&maxResults=20`;
 
       // Fetching YouTube API
       fetch(url)
@@ -242,7 +273,7 @@
     function loadHome() {
       clearVideoContainer(); // Clear existing videos
       document.getElementById('homeLink').classList.add('active'); // Highlight Home link
-      loadVideos('', homeAPIKey); // Use home API key for initial load
+      loadVideos('', 'video', homeAPIKey); // Load initial videos (you can modify this to load from a specific category)
     }
 
     // Load shorts (not implemented in this example)
@@ -258,8 +289,10 @@
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
         // User has scrolled to the bottom
         var searchQuery = document.getElementById('searchInput').value.trim();
+        var filter = document.getElementById('filter').value;
+
         if (searchQuery !== '') {
-          loadVideos(searchQuery, searchAPIKey); // Load more videos for the current search query
+          loadVideos(searchQuery, filter, searchAPIKey); // Load more videos for the current search query
         } else {
           loadHome(); // Load more videos for home
         }
@@ -268,4 +301,3 @@
   </script>
 </body>
 </html>
-
