@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrivTube</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <a href="index.html">Home</a>
+    <a href="shorts.html">Shorts</a>
+    <a href="#" onclick="History()">History</a>
+  </div>
+
+  <!-- Main content -->
+  <div id="main">
+    <div id="title">
+      PrivTube - Home
+    </div>
+
+    <div id="search-container">
+      <input type="text" id="searchInput" placeholder="Search YouTube">
+      <button id="searchButton" onclick="searchVideos()">Search</button>
+    </div>
+
+    <div id="video-container">
+      <div class="video-grid" id="videoGrid"></div>
+    </div>
+  </div>
+
+  <script src="scripts.js"></script> <!-- Link to your JavaScript file -->
+</body>
+</html>
