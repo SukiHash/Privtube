@@ -23,6 +23,20 @@
       left: 0;
       overflow-y: auto; /* Allow scrolling if needed */
     }
+    #sidebar a {
+      display: block;
+      padding: 10px 20px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px;
+      transition: background-color 0.3s;
+    }
+    #sidebar a:hover {
+      background-color: #555; /* Darker on hover */
+    }
+    #sidebar a.active {
+      background-color: #FF0000; /* Red background for active link */
+    }
     #main {
       margin-left: 200px; /* Adjust main content area */
       padding: 20px;
@@ -98,23 +112,12 @@
       border: none;
       border-radius: 8px;
     }
-    #sidebar a {
-      display: block;
-      padding: 10px 20px;
-      color: #fff;
-      text-decoration: none;
-      font-size: 18px;
-      transition: background-color 0.3s;
-    }
-    #sidebar a:hover {
-      background-color: #555; /* Darker on hover */
-    }
   </style>
 </head>
 <body>
   <!-- Sidebar -->
   <div id="sidebar">
-    <a href="#" onclick="loadHome()">Home</a>
+    <a href="#" id="homeLink" onclick="loadHome()">Home</a>
     <a href="#" onclick="loadShorts()">Shorts</a>
     <a href="#" onclick="History()">History</a>
   </div>
@@ -154,7 +157,7 @@
       if (isLoading) return;
 
       isLoading = true;
-      var url = https://www.googleapis.com/youtube/v3/search?key=AIzaSyD264oh-8oBj02CTcHgD024qr633XOw1Ks&type=video&part=snippet&q=${keyword}&pageToken=${nextPageToken}&maxResults=20;
+      var url = `https://www.googleapis.com/youtube/v3/search?key=AIzaSyD264oh-8oBj02CTcHgD024qr633XOw1Ks&type=video&part=snippet&q=${keyword}&pageToken=${nextPageToken}&maxResults=20`;
 
       // Fetching YouTube API
       fetch(url)
@@ -212,7 +215,7 @@
 
     function embedVideo(videoId) {
       var videoGrid = document.getElementById('videoGrid');
-      videoGrid.innerHTML += <iframe width="100%" height="400" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>;
+      videoGrid.innerHTML += `<iframe width="100%" height="400" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
     }
 
     function clearVideoContainer() {
@@ -225,7 +228,7 @@
       history.push(query);
     }
 
-    // Function to load histroy
+    // Function to load history (not implemented in this example)
     function History() {
       history = [];
       alert('History feature is not implemented.');
@@ -234,6 +237,7 @@
     // Load home videos initially
     function loadHome() {
       clearVideoContainer(); // Clear existing videos
+      document.getElementById('homeLink').classList.add('active'); // Highlight Home link
       loadVideos(''); // Load initial videos (you can modify this to load from a specific category)
     }
 
@@ -245,7 +249,7 @@
     // Load home videos initially when the page loads
     loadHome();
 
-    // Infinite scroll implementation
+    // Infinite scroll implementation (not implemented in this example)
     window.onscroll = function() {
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
         // User has scrolled to the bottom
