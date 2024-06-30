@@ -143,7 +143,7 @@
     let isLoading = false; // Variable to prevent multiple simultaneous requests
     let history = []; // Array to store history
 
-    // API keys
+        // API keys
     const homeAPIKey = 'AIzaSyC7r_0nZUd5YpfwyDFcjrKRy1Fhw_bs4I4';
     const searchAPIKey = 'AIzaSyBJqBurHNMVkVMTqgLgnZARm_6lDUy5GkA';
 
@@ -250,21 +250,22 @@
       alert('Shorts feature is not implemented.');
     }
 
-    // Load home videos initially when the page loads
+    // Initial load of home videos
     loadHome();
 
-    // Infinite scroll implementation (not implemented in this example)
-    window.onscroll = function() {
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-        // User has scrolled to the bottom
+    // Infinite scrolling implementation
+    window.addEventListener('scroll', scrollListener);
+
+    function scrollListener() {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
         var searchQuery = document.getElementById('searchInput').value.trim();
         if (searchQuery !== '') {
           loadVideos(searchQuery, searchAPIKey); // Load more videos for the current search query
         } else {
-          loadHome(); // Load more videos for home
+          loadVideos('', homeAPIKey); // Load more videos for home
         }
       }
-    };
+    }
   </script>
 </body>
 </html>
