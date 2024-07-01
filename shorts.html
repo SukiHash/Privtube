@@ -72,9 +72,9 @@
 <body>
   <!-- Sidebar -->
   <div id="sidebar">
-    <a href="index.html" id="homeLink" onclick="">Home</a>
+    <a href="index.html" id="homeLink">Home</a>
     <a href="shorts.html" class="active">Shorts</a>
-    <a href="#" onclick="History()">History</a>
+    <a href="#" onclick="historyPage()">History</a>
   </div>
 
   <!-- Main content -->
@@ -118,11 +118,14 @@
         .catch(error => {
           console.error('Error fetching Shorts IDs:', error);
           if (error.message.includes('quotaExceeded')) {
-            document.getElementById('errorMessage').style.display = 'block';
             switchApiKey();
+            if (currentKeyIndex === 0) {
+              document.getElementById('errorMessage').style.display = 'block';
+              return;
+            }
             loadShorts();
           } else if (error.message.includes('403')) {
-            alert('Hey Due to rate limits youtube has stopped our site temp pls come back later.');
+            alert('Hey, due to rate limits, YouTube has temporarily stopped our site. Please come back later.');
           }
         });
 
@@ -217,7 +220,7 @@
     }
 
     // Function to handle History page (replace with actual functionality)
-    function History() {
+    function historyPage() {
       alert('History page functionality not implemented.');
     }
 
