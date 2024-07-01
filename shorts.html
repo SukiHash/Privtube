@@ -83,6 +83,8 @@
     let shorts = []; // Array to store Shorts video IDs
     let currentIndex = -1; // Index to track the currently playing Shorts video
     let isLoading = false; // Flag to prevent multiple simultaneous requests
+    let retryCount = 0; // Counter for retries
+    const maxRetries = 3; // Maximum retries for loading videos
 
     // API key for fetching Shorts (replace with your actual API key)
     const shortsAPIKey = 'AIzaSyA-Dc08Er4y_vSGZ9zmKDKE3uj2e6TZ3mk';
@@ -133,6 +135,16 @@
       var shortsIframe = document.getElementById('shortsIframe');
       shortsIframe.src = `https://www.youtube.com/embed/${shorts[index]}?autoplay=1`; // Add autoplay=1 to autoplay
 
+      shortsIframe.onerror = function() {
+        if (retryCount < maxRetries) {
+          retryCount++;
+          playShortAtIndex(index); // Retry loading the same video
+        } else {
+          retryCount = 0;
+          playNextShort(); // Move to the next video after max retries
+        }
+      };
+
       isLoading = false; // Reset isLoading flag
     }
 
@@ -175,4 +187,3 @@
   </script>
 </body>
 </html>
-
