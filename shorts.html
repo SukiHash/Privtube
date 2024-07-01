@@ -61,6 +61,12 @@
       border: none;
       border-radius: 8px;
     }
+    #errorMessage {
+      color: red;
+      font-size: 18px;
+      text-align: center;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -77,6 +83,7 @@
     <div id="shortsPlayer">
       <iframe id="shortsIframe" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
     </div>
+    <div id="errorMessage">Error: Unable to load videos. You have exceeded your API quota.</div>
   </div>
 
   <script>
@@ -86,8 +93,21 @@
     let retryCount = 0; // Counter for retries
     const maxRetries = 3; // Maximum retries for loading videos
 
-    // API key for fetching Shorts (replace with your actual API key)
-    const shortsAPIKey = 'AIzaSyA-Dc08Er4y_vSGZ9zmKDKE3uj2e6TZ3mk';
+    // Array of API keys
+    const apiKeys = [
+      'AIzaSyC7r_0nZUd5YpfwyDFcjrKRy1Fhw_bs4I4',
+      'AIzaSyDiTSfV-iZWDrQdl4Mi6LIn3FeQ07Y1ZWE',
+      'AIzaSyC7wuJ6pAufq1X-z2gt2-ttC-c2pSm-4MM'
+    ];
+    let currentKeyIndex = 0;
+
+    function getApiKey() {
+      return apiKeys[currentKeyIndex];
+    }
+
+    function switchApiKey() {
+      currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+    }
 
     function loadShorts() {
       fetchShortsIds()
@@ -97,6 +117,13 @@
         })
         .catch(error => {
           console.error('Error fetching Shorts IDs:', error);
+          if (error.message.includes('quotaExceeded')) {
+            document.getElementById('errorMessage').style.display = 'block';
+            switchApiKey();
+            loadShorts();
+          } else if (error.message.includes('403')) {
+            alert('Hey Due to rate limits youtube has stopped our site temp pls come back later.');
+          }
         });
 
       // Listen for scroll events
@@ -148,12 +175,24 @@
       isLoading = false; // Reset isLoading flag
     }
 
-    // Function to fetch Shorts video IDs (placeholder)
+    // Function to fetch Shorts video IDs (with a default query)
     function fetchShortsIds() {
-      var url = `https://www.googleapis.com/youtube/v3/search?key=${shortsAPIKey}&type=video&part=snippet&q=shorts&maxResults=50`;
+      const query = 'shorts'; // Default search query
+      var url = `https://www.googleapis.com/youtube/v3/search?key=${getApiKey()}&type=video&part=snippet&q=${query}&maxResults=50`;
 
       return fetch(url)
-        .then(response => response.json())
+        .then(response => {
+          if (response.status === 403) {
+            return response.json().then(error => {
+              if (error.error.errors[0].reason === 'quotaExceeded') {
+                throw new Error('quotaExceeded');
+              } else {
+                throw new Error('403');
+              }
+            });
+          }
+          return response.json();
+        })
         .then(data => {
           if (data.items) {
             return data;
@@ -187,3 +226,4 @@
   </script>
 </body>
 </html>
+
